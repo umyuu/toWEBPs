@@ -1,15 +1,21 @@
+Add-Type -AssemblyName System.Windows.Forms
 class Webp {
+    # WebPの実行ファイルのダウンロードページ
+    [string]$DownloadPage
     [string]$FilePath
     # 処理除外対象の拡張子の配列
     [string[]]$ExcludedExtensions
     #[string]$Arguments
 
     Webp(){
-        $this.FilePath = [System.Environment]::GetFolderPath("Desktop") + "\ConvertWebp\cwebp.exe"
+        $this.DownloadPage = [string]"https://developers.google.com/speed/webp/download?hl=ja"
+        $this.FilePath = $PSScriptRoot + "\third_party\cwebp.exe"
         $this.ExcludedExtensions = @(".webp", ".exe", ".bat", ".ps1")
 	#$this.Arguments = ""
     }
-
+    [bool]IsExecutableExists(){
+        return Test-Path -Path $this.FilePath
+    }
     [string]ToString(){
         return $this.FilePath
     }
@@ -41,35 +47,30 @@ function Convert-Webp {
     Write-Output "#Convert-Webp End"
 }
 
-function Process-Strings {
-  param (
-      $webp,
-      $strings
-  )
-  Write-Output "Process-Strings"
-  Write-Output $strings
-  foreach ($string in $strings) {
-    Convert-Webp -webp $webp -FileName $string
-  }
-}
-
+# 主処理
 $args = @($args)
-Write-Output "#Script Start"
-Write-Output $args
-Write-Output "----Start-Sleep--------"
-Write-Output $MyInvocation.MyCommand.Path
-Write-Output "webp"
-[Webp]$webp = [Webp]::new()
-Write-Output $webp.ToString()
-Write-Output "Process-Strings"
+Write-Output "#Display Run Params $($PSScriptRoot) $($args)"
 
+[Webp]$webp = [Webp]::new()
+Write-Output "#WebP Check configuration"
+
+if (-not $webp.IsExecutableExists()) {
+    $result = [System.Windows.Forms.MessageBox]::Show("`WebPの実行ファイルが存在しません。`n$($webp.FilePath)`n`nダウンロードページを開きますか？`n$($webp.DownloadPage)`nはい:開く、いいえ:アプリを終了する。", "確認:toWEBPs", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+    if ($result -eq "Yes") {
+        Start-Process $webp.DownloadPage
+        exit
+    } else {
+        Write-Output "Script execution cancelled by user."
+        exit
+    }
+}
+Write-Output "Exists OK $($webp.FilePath)"
+
+Write-Output "#Main"
 foreach ($v in $args) {
-  Write-Output "Process-Strings END"
-  Write-Output $v
   Convert-Webp -webp $webp -FileName $v
 }
-Process-Strings -webp $webp -strings $args
-#Convert-Webp $webp $args[1]
-Write-Output "#Script End"
+Write-Output "#Main End"
+
 Write-Output "Sleep 15sec"
 Start-Sleep -s 15
