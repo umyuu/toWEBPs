@@ -10,7 +10,7 @@ class Webp {
     Webp(){
         $this.DownloadPage = [string]"https://developers.google.com/speed/webp/download?hl=ja"
         $this.FilePath = $PSScriptRoot + "\third_party\cwebp.exe"
-        $this.ExcludedExtensions = @(".webp", ".exe", ".bat", ".ps1")
+        $this.ExcludedExtensions = @(".webp", ".exe", ".bat", ".ps1", ".zip")
 	#$this.Arguments = ""
     }
     [bool]IsExecutableExists(){
