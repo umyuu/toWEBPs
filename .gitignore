@@ -1,0 +1,5 @@
+#  Ignore image file extensions
+*.avif
+*.jpg
+*.png
+*.webp
