@@ -1,3 +1,4 @@
+Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.Windows.Forms
 
 # JSON設定ファイルの読み込み
@@ -6,9 +7,9 @@ function Load-Config {
         [string]$configFilePath
     )
     if (-not (Test-Path -Path $configFilePath)) {
-        Write-Host "設定ファイルが存在しません: $configFilePath"
-        exit
+        throw "設定ファイルが存在しません: $configFilePath"
     }
+
     return Get-Content -Path $configFilePath | ConvertFrom-Json
 }
 
@@ -30,7 +31,6 @@ class WebpConverter {
     [string[]]$ExcludedFileExtensions
     # WebP変換時に使用するデフォルトのコマンドライン引数の配列
     [string[]]$DefaultArguments
-    [PSCustomObject]$Messages
     
     # コンストラクタ
     WebpConverter([PSCustomObject]$config){
@@ -38,7 +38,6 @@ class WebpConverter {
         $this.ExecutablePath = Join-Path $PSScriptRoot $config.ExecutablePath
         $this.ExcludedFileExtensions = $config.ExcludedFileExtensions
         $this.DefaultArguments = $config.DefaultArguments
-        $this.Messages = $config.Messages
     }
     # 実行ファイルの存在確認
     [bool]IsExecutableExists(){
@@ -57,6 +56,7 @@ class WebpConverter {
     }
 }
 
+# Convert-ToWebp関数の定義
 function Convert-ToWebp {
     param (
         [WebpConverter]$webp,
@@ -88,13 +88,15 @@ function Convert-ToWebp {
     return [ConversionResult]::Success
 }
 
+# スクリプト実行部分
+## 主処理
+$args = @($args)
+#$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
+
+Write-Host "#Display Run Params $($PSScriptRoot) $($args)"
+
 $configFilePath = Join-Path $PSScriptRoot "config.json"
 $config = Load-Config $configFilePath
-
-# 主処理
-#$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
-$args = @($args)
-Write-Host "#Display Run Params $($PSScriptRoot) $($args)"
 
 # WebPコンバータのインスタンス化と設定の確認
 [WebpConverter]$webp = [WebpConverter]::new($config)
@@ -121,8 +123,8 @@ $conversionResultDictionary = [ordered]@{}
 }
 
 foreach ($v in $args) {
-  $result = Convert-ToWebp -webp $webp -FileName $v
-  $conversionResultDictionary[$result] += 1  
+    $result = Convert-ToWebp -webp $webp -FileName $v
+    $conversionResultDictionary[$result] += 1  
 }
 
 # 処理件数を出力
