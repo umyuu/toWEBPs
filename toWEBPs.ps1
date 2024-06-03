@@ -1,5 +1,9 @@
 Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Runtime
+
+[System.Diagnostics.Stopwatch]$stopWatch = New-Object System.Diagnostics.Stopwatch
+$stopWatch.Start()
 
 # JSON設定ファイルの読み込み
 function Load-Config {
@@ -10,7 +14,7 @@ function Load-Config {
         throw "設定ファイルが存在しません: $configFilePath"
     }
 
-    return Get-Content -Path $configFilePath | ConvertFrom-Json
+    return Get-Content -Path $configFilePath -Raw | ConvertFrom-Json
 }
 
 # Enumの定義
@@ -89,7 +93,7 @@ function Convert-ToWebp {
 }
 
 # スクリプト実行部分
-## 主処理
+
 $args = @($args)
 #$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
 
@@ -116,21 +120,23 @@ if (-not $webp.IsExecutableExists()) {
 Write-Host "Exists OK $($webp.ExecutablePath)"
 
 Write-Host "#Main"
-# 結果カウンターの初期化
-$conversionResultDictionary = [ordered]@{}
+
+# 結果サマリーの初期化
+$resultSummary = [ordered]@{}
 [System.Enum]::GetValues([ConversionResult]) | ForEach-Object {
-    $conversionResultDictionary.Add($_, [int]0)
+    $resultSummary.Add($_, [int]0)
 }
 
+# 主処理
 foreach ($v in $args) {
     $result = Convert-ToWebp -webp $webp -FileName $v
-    $conversionResultDictionary[$result] += 1  
+    $resultSummary[$result] += 1  
 }
 
 # 処理件数を出力
 [System.Text.StringBuilder]$sb = New-Object System.Text.StringBuilder
 [void]$sb.Append("Conversion Results: Total:$($args.Length), ")
-foreach ($entry in $conversionResultDictionary.GetEnumerator()) {
+foreach ($entry in $resultSummary.GetEnumerator()) {
     if ($entry.Key -ne "None") {
         [void]$sb.Append("$($entry.Key): $($entry.Value), ")
     }
@@ -139,7 +145,7 @@ foreach ($entry in $conversionResultDictionary.GetEnumerator()) {
 if ($sb.Length -gt 2) {
     [void]$sb.Remove($sb.Length -2, 2)
 }
-
+Write-Host "Execution time: $($stopWatch.ElapsedMilliseconds)ms"
 Write-Host $sb.ToString()
 
 Write-Host "Sleep 15sec"
