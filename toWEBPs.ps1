@@ -40,13 +40,12 @@ class WebpConverter {
     [string]ToString(){
         [System.Text.StringBuilder]$sb = New-Object System.Text.StringBuilder
 
-        $sb.Append("WebpConverter: ")
-        $sb.Append("DownloadPageUrl = $($this.DownloadPageUrl), ")
-        $sb.Append("ExecutablePath = $($this.ExecutablePath), ")
-        $sb.Append("ExcludedFileExtensions = $($this.ExcludedFileExtensions -join ", "), ")
-        $sb.Append("DefaultArguments = $($this.DefaultArguments -join ", ")")
+        [void]$sb.Append("WebpConverter: ")
+        [void]$sb.Append("DownloadPageUrl = $($this.DownloadPageUrl), ")
+        [void]$sb.Append("ExecutablePath = $($this.ExecutablePath), ")
+        [void]$sb.Append("ExcludedFileExtensions = $($this.ExcludedFileExtensions -join ", "), ")
+        [void]$sb.Append("DefaultArguments = $($this.DefaultArguments -join ", ")")
 
-        # 余分なカンマとスペースを削除
         return $sb.ToString().TrimEnd(", ")
     }
 }
@@ -57,17 +56,17 @@ function Convert-ToWebp {
         [string]$FileName
     )
 
-    Write-Output "#Convert-Webp Start"
+    Write-Host "#Convert-Webp Start"
     if ([string]::IsNullOrEmpty($FileName)) {
-        Write-Output "Skipping empty filename"
+        Write-Host "Skipping empty filename"
         return [ConversionResult]::Skipped
     }
 
-    Write-Output "source: $FileName"
+    Write-Host "source: $FileName"
 
     $Extension = [System.IO.Path]::GetExtension($FileName)
     if ($webp.ExcludedFileExtensions -contains $Extension) {
-        Write-Output "Skipping file with extension $($Extension):  $($FileName)"
+        Write-Host "Skipping file with extension $($Extension):  $($FileName)"
         return [ConversionResult]::Skipped
     }
 
@@ -75,21 +74,21 @@ function Convert-ToWebp {
     $GenerateFileName = [System.IO.Path]::ChangeExtension($FileName, ".webp")
     $Arguments = $webp.DefaultArguments + @("-o", $GenerateFileName, $FileName) -join " "
 
-    Write-Output $Arguments
+    Write-Host $Arguments
     Start-Process -FilePath $webp.ExecutablePath -ArgumentList $Arguments
     #$webp.Convert($FileName)
-    Write-Output "#Convert-Webp End"
+    Write-Host "#Convert-Webp End"
     return [ConversionResult]::Success
 }
 
 # 主処理
-#$args = @("20240529_003857.webp")
+#$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
 $args = @($args)
-Write-Output "#Display Run Params $($PSScriptRoot) $($args)"
+Write-Host "#Display Run Params $($PSScriptRoot) $($args)"
 
 [WebpConverter]$webp = [WebpConverter]::new($config)
-Write-Output "#WebP Check configuration"
-Write-Output $webp.ToString()
+Write-Host "#WebP Check configuration"
+Write-Host $webp.ToString()
 
 if (-not $webp.IsExecutableExists()) {
     $result = [System.Windows.Forms.MessageBox]::Show("`WebPの実行ファイルが存在しません。`n$($webp.ExecutablePath)`n`nダウンロードページを開きますか？`n$($webp.DownloadPageUrl)`nはい:開く、いいえ:アプリを終了する。", "確認:toWEBPs", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
@@ -97,44 +96,38 @@ if (-not $webp.IsExecutableExists()) {
         Start-Process $webp.DownloadPageUrl
         exit
     } else {
-        Write-Output "Script execution cancelled by user."
+        Write-Host "Script execution cancelled by user."
         exit
     }
 }
-Write-Output "Exists OK $($webp.ExecutablePath)"
+Write-Host "Exists OK $($webp.ExecutablePath)"
 
-function Main {
-    Write-Output "Exists OK $($webp.ExecutablePath)"
-}
-
-Write-Output "#Main"
+Write-Host "#Main"
 # 結果カウンターの初期化
-$resultsCount = @{
-    "None" = 0
-    "Success" = 0
-    "Skipped" = 0
-    "Error" = 0
+$conversionResultDictionary = [ordered]@{}
+[System.Enum]::GetValues([ConversionResult]) | ForEach-Object {
+    $conversionResultDictionary.Add($_, [int]0)
 }
 
 foreach ($v in $args) {
   $result = Convert-ToWebp -webp $webp -FileName $v
-  $resultsCount[$result.ToString()]++
+  $conversionResultDictionary[$result] += 1  
 }
 
+# 処理件数を出力
 [System.Text.StringBuilder]$sb = New-Object System.Text.StringBuilder
 [void]$sb.Append("Conversion Results: Total:$($args.Length), ")
-
-foreach ($resultEntry in $resultsCount.GetEnumerator()) {
-    if ($resultEntry.Key -ne "None") {
-        $sb.Append("$($resultEntry.Key): $($resultEntry.Value), ")
+foreach ($entry in $conversionResultDictionary.GetEnumerator()) {
+    if ($entry.Key -ne "None") {
+        [void]$sb.Append("$($entry.Key): $($entry.Value), ")
     }
 }
-# 余分なカンマとスペースを削除
 # 余分なカンマとスペースを削除
 if ($sb.Length -gt 2) {
     [void]$sb.Remove($sb.Length -2, 2)
 }
 
-Write-Output $sb.ToString()
-Write-Output "Sleep 15sec"
+Write-Host $sb.ToString()
+
+Write-Host "Sleep 15sec"
 Start-Sleep -s 15
