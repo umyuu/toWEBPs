@@ -1,12 +1,16 @@
 Add-Type -AssemblyName System.Windows.Forms
-$ConfigFilePath = Join-Path $PSScriptRoot "config.json"
 
 # JSON設定ファイルの読み込み
-if (-Not (Test-Path -Path $ConfigFilePath)) {
-    Write-Output "設定ファイルが存在しません: $ConfigFilePath"
-    exit
+function Load-Config {
+    param (
+        [string]$configFilePath
+    )
+    if (-not (Test-Path -Path $configFilePath)) {
+        Write-Host "設定ファイルが存在しません: $configFilePath"
+        exit
+    }
+    return Get-Content -Path $configFilePath | ConvertFrom-Json
 }
-$config = Get-Content -Path $ConfigFilePath | ConvertFrom-Json
 
 # Enumの定義
 enum ConversionResult {
@@ -16,6 +20,7 @@ enum ConversionResult {
     Error
 }
 
+# WebpConverterクラスの定義
 class WebpConverter {
     # WebPの実行ファイルのダウンロードページのURL
     [string]$DownloadPageUrl
@@ -25,13 +30,15 @@ class WebpConverter {
     [string[]]$ExcludedFileExtensions
     # WebP変換時に使用するデフォルトのコマンドライン引数の配列
     [string[]]$DefaultArguments
-
+    [PSCustomObject]$Messages
+    
     # コンストラクタ
     WebpConverter([PSCustomObject]$config){
         $this.DownloadPageUrl = $config.DownloadPageUrl
         $this.ExecutablePath = Join-Path $PSScriptRoot $config.ExecutablePath
         $this.ExcludedFileExtensions = $config.ExcludedFileExtensions
         $this.DefaultArguments = $config.DefaultArguments
+        $this.Messages = $config.Messages
     }
     # 実行ファイルの存在確認
     [bool]IsExecutableExists(){
@@ -81,11 +88,15 @@ function Convert-ToWebp {
     return [ConversionResult]::Success
 }
 
+$configFilePath = Join-Path $PSScriptRoot "config.json"
+$config = Load-Config $configFilePath
+
 # 主処理
 #$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
 $args = @($args)
 Write-Host "#Display Run Params $($PSScriptRoot) $($args)"
 
+# WebPコンバータのインスタンス化と設定の確認
 [WebpConverter]$webp = [WebpConverter]::new($config)
 Write-Host "#WebP Check configuration"
 Write-Host $webp.ToString()
