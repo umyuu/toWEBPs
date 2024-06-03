@@ -5,12 +5,20 @@ Add-Type -AssemblyName System.Windows.Forms
 # ショートカット名
 [string]$ShortcutLink = [string]"$env:appdata\Microsoft\Windows\SendTo\toWEBPs.lnk"
 
+$result = [System.Windows.Forms.MessageBox]::Show("`インストールしますか？`n$($ShortcutLink)`n`nはい:上書きする、、いいえ:アプリを終了する。", "toWEBPs:確認", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+
+    if ($result -ne [System.Windows.Forms.DialogResult]::Yes) {
+        Write-Output "Script execution cancelled by user."
+        exit 1
+    }
+
+
 if (Test-Path -Path $ShortcutLink) {
     $result = [System.Windows.Forms.MessageBox]::Show("`ショートカットファイルが存在します。ファイルを上書きしますか？`n$($ShortcutLink)`n`nはい:上書きする、、いいえ:アプリを終了する。", "toWEBPs:確認", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
 
     if ($result -ne [System.Windows.Forms.DialogResult]::Yes) {
         Write-Output "Script execution cancelled by user."
-        exit 1
+        exit 2
     }
 }
 
