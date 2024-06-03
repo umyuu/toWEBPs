@@ -1,4 +1,13 @@
 Add-Type -AssemblyName System.Windows.Forms
+$ConfigFilePath = Join-Path $PSScriptRoot "config.json"
+
+# JSON設定ファイルの読み込み
+if (-Not (Test-Path -Path $ConfigFilePath)) {
+    Write-Output "設定ファイルが存在しません: $ConfigFilePath"
+    exit
+}
+$config = Get-Content -Path $ConfigFilePath | ConvertFrom-Json
+
 class WebpConverter {
     # WebPの実行ファイルのダウンロードページ
     [string]$DownloadPageUrl
@@ -8,10 +17,10 @@ class WebpConverter {
     [string[]]$ExcludedFileExtensions
     #[string]$Arguments
 
-    WebpConverter(){
-        $this.DownloadPageUrl = [string]"https://developers.google.com/speed/webp/download?hl=ja"
-        $this.ExecutablePath = [string]$PSScriptRoot + "\third_party\cwebp.exe"
-        $this.ExcludedFileExtensions = @(".webp", ".exe", ".bat", ".ps1", ".zip")
+    WebpConverter([PSCustomObject]$config){
+        $this.DownloadPageUrl = $config.DownloadPageUrl
+        $this.ExecutablePath = Join-Path $PSScriptRoot $config.ExecutablePath
+        $this.ExcludedFileExtensions = $config.ExcludedFileExtensions
 	#$this.Arguments = ""
     }
     [bool]IsExecutableExists(){
@@ -23,9 +32,13 @@ class WebpConverter {
 }
 
 function Convert-ToWebp {
-    param ([WebpConverter]$webp, [string]$FileName)
+    param (
+        [WebpConverter]$webp,
+        [string]$FileName
+    )
+
     Write-Output "#Convert-Webp Start"
-    if ($FileName.length -eq 0) {
+    if ([string]::IsNullOrEmpty($FileName)) {
         Write-Output "Skipping empty filename"
         return;
     }
@@ -52,7 +65,7 @@ function Convert-ToWebp {
 $args = @($args)
 Write-Output "#Display Run Params $($PSScriptRoot) $($args)"
 
-[WebpConverter]$webp = [WebpConverter]::new()
+[WebpConverter]$webp = [WebpConverter]::new($config)
 Write-Output "#WebP Check configuration"
 
 if (-not $webp.IsExecutableExists()) {

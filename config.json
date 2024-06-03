@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "DownloadPageUrl": "https://developers.google.com/speed/webp/download?hl=ja",
+  "ExecutablePath": "third_party\\cwebp.exe",
+  "ExcludedFileExtensions": [".webp", ".exe", ".bat", ".ps1", ".zip", ".gitignore", ".json", ".md"]
+}
