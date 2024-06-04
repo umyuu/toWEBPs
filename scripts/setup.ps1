@@ -11,56 +11,28 @@ $window = [System.Windows.Markup.XamlReader]::Load($xr)
 
 #
 $tabControl = $window.FindName("tabControl")
-
 $tabWelcome = $window.FindName("tabWelcome")
-
 $BacktButton = $window.FindName("BackButton")
 $NextButton = $window.FindName("NextButton")
 
-$Install = $window.FindName("Install")
-$installButton = $window.FindName("installButton")
-$installCanecelButton = $window.FindName("installCanecelButton")
-$uninstallButton = $window.FindName("uninstallButton")
-$uninstallCanecelButton = $window.FindName("uninstallCanecelButton")
+# TabControlのSelectionChangedイベントハンドラを追加
+$tabControl.Add_SelectionChanged({
+    param($sender, $e)
+    
+    # 選択されているタブのインデックスを取得
+    $selectedIndex = [int]$tabControl.SelectedIndex
 
-$installfinishButton = $window.FindName("installfinishButton")
-$uninstallfinishButton = $window.FindName("uninstallfinishButton")
-
-function tabWelcome-Next {
-
-}
-
-#イベントハンドラーの設定
-# 戻るボタン
-$BacktButton.Add_Click({
-    $SelectedIndex = [int]$tabControl.SelectedIndex
-    if ($SelectedIndex -eq 0) {
-            return
-    }
-
-    if ($SelectedIndex -eq 1 -or $SelectedIndex -eq 2) {
-        # Welcomeタブに
-        $tabControl.SelectedIndex = 0;
-        return
+    # インデックスに基づいてボタンのコンテンツを変更
+    switch ($selectedIndex) {
+        0 { $nextButton.Content = "Next" }
+        1 { $nextButton.Content = "Install" }
+        2 { $nextButton.Content = "Uninstall" }
+        3 { $nextButton.Content = "Finish" }
+        4 { $nextButton.Content = "Finish" }
     }
 })
-
-# 次へボタン
-$NextButton.Add_Click({
-    $SelectedIndex = [int]$tabControl.SelectedIndex
-    if ($SelectedIndex -eq 0) {
-        if ($Install.IsChecked) {
-            $tabControl.SelectedIndex = 1;
-        }else {
-            $tabControl.SelectedIndex = 2;
-        }
-
-        return
-    }
-})
-
 # インストール処理
-$installButton.Add_Click({
+function setup-install {
     Write-Output "Script execution cancelled by user."
     $result = [System.Windows.MessageBox]::Show("インストールしますか？", $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
     if ($result -ne [System.Windows.Forms.DialogResult]::Yes)
@@ -95,13 +67,11 @@ $installButton.Add_Click({
     }
 
     $tabControl.SelectedIndex += 2
-})
-$installCanecelButton.Add_Click({
-    $tabControl.SelectedIndex = 0
-})
+    #$NextButton.Content = "Close"
+}
 
 # アンインストール処理
-$uninstallButton.Add_Click({
+function setup-uninstall {
     $result = [System.Windows.MessageBox]::Show("アンインストールしますか？", $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
     if ($result -ne [System.Windows.Forms.DialogResult]::Yes)
     {
@@ -109,17 +79,60 @@ $uninstallButton.Add_Click({
     }
 
     $tabControl.SelectedIndex += 2
+}
+
+#イベントハンドラーの設定
+# 戻るボタン
+$BacktButton.Add_Click({
+    try{
+        $selectedIndex = [int]$tabControl.SelectedIndex
+        switch ($selectedIndex) {
+            1 {
+                $tabControl.SelectedIndex = 0;
+            }
+            2 {
+                $tabControl.SelectedIndex = 0;
+            }
+       }
+    }
+    catch {
+        Write-Host "An error occurred: $_.Exception.Message"
+    }
 })
 
-$uninstallCanecelButton.Add_Click({
-    $tabControl.SelectedIndex = 0
-})
-
-$installfinishButton.Add_Click({
-    $window.Close()
-})
-$uninstallfinishButton.Add_Click({
-    $window.Close()
+# 次へボタン
+$NextButton.Add_Click({
+    try{
+        $selectedIndex = [int]$tabControl.SelectedIndex
+        switch ($selectedIndex) {
+            0 {
+                $Install = $window.FindName("Install")
+                if ($Install.IsChecked) {
+                    $tabControl.SelectedIndex = 1;
+                } else {
+                    $tabControl.SelectedIndex = 2;
+                }
+            }
+            1 {
+                setup-install
+            }
+            2 {
+                setup-uninstall
+            }
+            3 {
+                $window.DialogResult = [System.Windows.Forms.DialogResult]::OK
+                $window.Close()
+            }
+            4 {
+                $window.DialogResult = [System.Windows.Forms.DialogResult]::OK
+                $window.Close()
+            }
+            default { throw "Unknown index: $selectedIndex" } # その他の場合の処理
+        }
+    }
+    catch {
+        Write-Host "An error occurred: $_.Exception.Message"
+    }
 })
 
 # ウィンドウの表示

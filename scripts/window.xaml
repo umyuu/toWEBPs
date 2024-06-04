@@ -49,10 +49,6 @@
                 <TextBlock Text="インストール画面(1/2)" Style="{StaticResource HeadingStyle}" TextWrapping="Wrap"/>
                 <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="5"  IsChecked="True" Name="shortcutLinkCheckBox" />
                 <TextBlock Text="installボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
-                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                    <Button Content="Install" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource DialogButtonStyle}" Name="installButton"/>
-                    <Button Content="Cancel" HorizontalAlignment="Right" Style="{StaticResource DialogButtonStyle}" Name="installCanecelButton"/>
-                </StackPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="UnInstallation">
@@ -60,10 +56,6 @@
                 <StackPanel Margin="8">
                    <TextBlock Text="アンインストール画面(1/2)"  Style="{StaticResource HeadingStyle}" TextWrapping="Wrap"/>
                    <TextBlock Text="Uninstallボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
-                   <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                    <Button Content="Uninstall" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource DialogButtonStyle}" Name="uninstallButton"/>
-                    <Button Content="Cancel" HorizontalAlignment="Right" Style="{StaticResource DialogButtonStyle}" Name="uninstallCanecelButton"/>
-                    </StackPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Finish">
@@ -71,15 +63,13 @@
                 <StackPanel Margin="8">
                 <TextBlock Text="インストール完了(2/2)"  Style="{StaticResource HeadingStyle}"/>
                 <TextBlock Text="インストールが完了しました。WebPに変換したいファイルを選択し送るメニューからtoWEBPsを選択すると実行します。" FontSize="20" Margin="10" TextWrapping="Wrap" />
-                <Button Content="閉じる" HorizontalAlignment="Right" Style="{StaticResource DialogButtonStyle}" Name="installfinishButton"/>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="UnInstallationFinish">
+            <TabItem Header="Finish">
                 <!-- アンインストール完了ステップのUI -->
                 <StackPanel Margin="8">
                 <TextBlock Text="アンインストール完了(2/2)"  Style="{StaticResource HeadingStyle}" TextWrapping="Wrap" />
                 <TextBlock Text="アンインストールが完了しました。ありがとうございました。" FontSize="20" Margin="10" TextWrapping="Wrap" />
-                <Button Content="閉じる" HorizontalAlignment="Right" Style="{StaticResource DialogButtonStyle}" Name="uninstallfinishButton"/>
                 </StackPanel>
             </TabItem>
         </TabControl>
