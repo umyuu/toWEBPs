@@ -1,0 +1,3 @@
+#  Ignore cwebp
+cwebp.exe
+libwebp*/
