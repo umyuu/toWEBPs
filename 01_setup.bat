@@ -1,6 +1,5 @@
 @echo off
 setlocal
-
 :: PowerShellスクリプトのパスを設定
 set "scriptPath=%~dp0\scripts\setup.ps1"
 

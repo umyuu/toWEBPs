@@ -1,15 +1,15 @@
+Set-StrictMode -Version Latest
+Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName PresentationFramework
+# 実行ディレクトリを変更します。
+Set-Location -Path (Split-Path $PSScriptRoot -Parent)
+[string]$ParentDirectory = Split-Path $PSScriptRoot -Parent
+. "$($ParentDirectory)\scripts\utils.ps1"
 
-function load-window {
-    param($xamlFilePath)# XAMLファイルのパス
+$config = Load-Config -configFilePath (Join-Path $ParentDirectory "config.json")
 
-    # XAMLの読み込み
-    $xamlContent = Get-Content -Path $xamlFilePath -Encoding utf8
-    $xr = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
-    return [System.Windows.Markup.XamlReader]::Load($xr)
-}
+$window = Load-Window -xamlFilePath (Join-Path $PSScriptRoot "\installWizard.xaml")
 
-$window = load-window -xamlFilePath (Join-Path $PSScriptRoot "\installWizard.xaml")
 #
 $tabControl = $window.FindName("tabControl")
 $tabWelcome = $window.FindName("tabWelcome")
@@ -60,7 +60,7 @@ function setup-install {
         return;
     }
 
-    $shortcutLinkCheckBox = [System.Windows.Controls.CheckBox]$window.FindName("shortcutLinkCheckBox")
+    $shortcutLinkCheckBox = [System.Windows.Controls.CheckBox]$window.FindName("ShortCutLinkCheckBox")
     if ($shortcutLinkCheckBox.IsChecked) {
         # ショートカット名
         [string]$ShortcutLink = [string]"$env:appdata\Microsoft\Windows\SendTo\toWEBPs.lnk"
@@ -83,6 +83,8 @@ function setup-install {
         $Shortcut.Save()
     }
 
+
+
     $tabControl.SelectedIndex += 2
 }
 
@@ -93,7 +95,11 @@ function setup-uninstall {
     {
         return;
     }
-    Start-Process "$env:APPDATA\Microsoft\Windows\SendTo"
+
+    $oepnSendToCheckBox = [System.Windows.Controls.CheckBox]$window.FindName("OepnSendToCheckBox")
+    if ($oepnSendToCheckBox.IsChecked) {
+        Start-Process "$env:APPDATA\Microsoft\Windows\SendTo"    
+    }
 
     $tabControl.SelectedIndex += 2
 }
@@ -144,6 +150,8 @@ $nextButton.Add_Click({
     }
     catch {
         Write-Host "An error occurred: $_.Exception.Message"
+        [System.Windows.Forms.MessageBox]::Show("An error occurred: $_.Exception.Message",  $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+        
     }
 })
 

@@ -27,17 +27,16 @@
 
         <TabControl Name="tabControl">
             <TabItem Header="Welcome" x:Name="tabWelcome">
-                <Border Padding="0, 0, 0, 0" Background="Blue">
+                <Border Padding="0, 0, 0, 0">
                 <StackPanel Margin="0">
                     <TextBlock Text="Welcome to the Setup Wizard" Style="{StaticResource HeadingStyle}"/>
-                    <Border Padding="8, 4, 0, 0" Background="Red">
+                    <Border Padding="8, 4, 0, 0" >
                     <StackPanel Margin="8">
                     <TextBlock Text="Please select Install or Uninstall:" FontSize="20" Margin="8"/>
                     <StackPanel Margin="8">
                         <RadioButton Content="Install" GroupName="Selection" Margin="8" IsChecked="True" Name="Install"/>
                         <RadioButton Content="Uninstall" GroupName="Selection" Margin="8"/>
                     </StackPanel>
-
                     </StackPanel>
                     </Border>
                 </StackPanel>
@@ -47,7 +46,7 @@
                 <!-- インストールステップのUI -->
                 <StackPanel Margin="8">
                 <TextBlock Text="インストール画面(1/2)" Style="{StaticResource HeadingStyle}" TextWrapping="Wrap"/>
-                <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="5"  IsChecked="True" Name="shortcutLinkCheckBox" />
+                <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="5"  IsChecked="True" Name="ShortCutLinkCheckBox" />
                 <TextBlock Text="installボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
                 </StackPanel>
             </TabItem>
@@ -55,6 +54,7 @@
                 <!-- アンインストールステップのUI -->
                 <StackPanel Margin="8">
                    <TextBlock Text="アンインストール画面(1/2)"  Style="{StaticResource HeadingStyle}" TextWrapping="Wrap"/>
+                   <CheckBox Content="アンインストール完了時に「送る」フォルダを開く。" Margin="5" IsChecked="True" Name="OepnSendToCheckBox" />
                    <TextBlock Text="Uninstallボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
                 </StackPanel>
             </TabItem>

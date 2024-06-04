@@ -2,20 +2,10 @@ Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Runtime
 
+Set-Location -Path $PSScriptRoot #スクリプトの実行ディレクトリ
 [System.Diagnostics.Stopwatch]$stopWatch = New-Object System.Diagnostics.Stopwatch
 $stopWatch.Start()
-
-# JSON設定ファイルの読み込み
-function Load-Config {
-    param (
-        [string]$configFilePath
-    )
-    if (-not (Test-Path -Path $configFilePath)) {
-        throw "設定ファイルが存在しません: $configFilePath"
-    }
-
-    return Get-Content -Path $configFilePath -Raw | ConvertFrom-Json
-}
+. "$($ParentDirectory)\scripts\utils.ps1"
 
 # Enumの定義
 enum ConversionResult {
@@ -97,10 +87,8 @@ function Convert-ToWebp {
 $args = @($args)
 #$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
 
-Write-Host "#Display Run Params $($PSScriptRoot) $($args)"
-
-$configFilePath = Join-Path $PSScriptRoot "config.json"
-$config = Load-Config $configFilePath
+Write-Host "#Run Params $($PSScriptRoot) $($args)"
+$config = Load-Config -configFilePath (Join-Path $PSScriptRoot "config.json")
 
 # WebPコンバータのインスタンス化と設定の確認
 [WebpConverter]$webp = [WebpConverter]::new($config)
