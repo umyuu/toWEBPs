@@ -5,7 +5,7 @@ Add-Type -AssemblyName System.Runtime
 Set-Location -Path $PSScriptRoot #スクリプトの実行ディレクトリ
 [System.Diagnostics.Stopwatch]$stopWatch = New-Object System.Diagnostics.Stopwatch
 $stopWatch.Start()
-. "$($ParentDirectory)\scripts\utils.ps1"
+. "$($PSScriptRoot)\scripts\utils.ps1"
 
 # WebpConverterクラスの定義
 class WebpConverter {
@@ -45,6 +45,7 @@ class WebpConverter {
 # Convert-ToWebp関数の定義
 function Convert-ToWebp {
     param (
+        [Parameter(Mandatory=$true)] #引数を必須に
         [WebpConverter]$webp,
         [string]$FileName
     )
