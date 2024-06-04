@@ -63,13 +63,15 @@
                 <StackPanel Margin="8">
                 <TextBlock Text="インストール完了(2/2)"  Style="{StaticResource HeadingStyle}"/>
                 <TextBlock Text="インストールが完了しました。WebPに変換したいファイルを選択し送るメニューからtoWEBPsを選択すると実行します。" FontSize="20" Margin="10" TextWrapping="Wrap" />
+                <TextBlock Text="この画面は、閉じていただいて問題ありません。" FontSize="20" Margin="10" TextWrapping="Wrap" />
                 </StackPanel>
             </TabItem>
             <TabItem Header="Finish">
                 <!-- アンインストール完了ステップのUI -->
                 <StackPanel Margin="8">
                 <TextBlock Text="アンインストール完了(2/2)"  Style="{StaticResource HeadingStyle}" TextWrapping="Wrap" />
-                <TextBlock Text="アンインストールが完了しました。ありがとうございました。" FontSize="20" Margin="10" TextWrapping="Wrap" />
+                <TextBlock Text="アンインストールが完了しました。ありがとうございました。送るのメニューを開きましたのでtoWEBPsのショートカットファイルの削除をお願いします。" FontSize="20" Margin="10" TextWrapping="Wrap" />
+                <TextBlock Text="この画面は、閉じていただいて問題ありません。" FontSize="20" Margin="10" TextWrapping="Wrap" />
                 </StackPanel>
             </TabItem>
         </TabControl>

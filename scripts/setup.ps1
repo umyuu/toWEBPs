@@ -1,36 +1,56 @@
 Add-Type -AssemblyName PresentationFramework
 
-# XAMLの読み込み
-# XAMLファイルのパス
-$xamlFilePath = Join-Path $PSScriptRoot "\window.xaml"
+function load-window {
+    param($xamlFilePath)# XAMLファイルのパス
 
-# XAMLの読み込み
-$xamlContent = Get-Content -Path $xamlFilePath -Encoding utf8
-$xr = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
-$window = [System.Windows.Markup.XamlReader]::Load($xr)
+    # XAMLの読み込み
+    $xamlContent = Get-Content -Path $xamlFilePath -Encoding utf8
+    $xr = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
+    return [System.Windows.Markup.XamlReader]::Load($xr)
+}
 
+$window = load-window -xamlFilePath (Join-Path $PSScriptRoot "\window.xaml")
 #
 $tabControl = $window.FindName("tabControl")
 $tabWelcome = $window.FindName("tabWelcome")
-$BacktButton = $window.FindName("BackButton")
-$NextButton = $window.FindName("NextButton")
+$backtButton = $window.FindName("BackButton")
+$nextButton = $window.FindName("NextButton")
 
 # TabControlのSelectionChangedイベントハンドラを追加
 $tabControl.Add_SelectionChanged({
     param($sender, $e)
-    
-    # 選択されているタブのインデックスを取得
-    $selectedIndex = [int]$tabControl.SelectedIndex
-
-    # インデックスに基づいてボタンのコンテンツを変更
-    switch ($selectedIndex) {
-        0 { $nextButton.Content = "Next" }
-        1 { $nextButton.Content = "Install" }
-        2 { $nextButton.Content = "Uninstall" }
-        3 { $nextButton.Content = "Finish" }
-        4 { $nextButton.Content = "Finish" }
+    try {
+        # 選択されているタブのインデックスを取得
+        $selectedIndex = [int]$tabControl.SelectedIndex
+        $backtButton.Visibility = [System.Windows.Visibility]::Hidden
+        # インデックスに基づいてボタンのコンテンツを変更
+        switch ($selectedIndex) {
+            -1 {
+                return;
+            }
+            0 { 
+                $nextButton.Content = "Next"
+            }
+            1 { 
+                $backtButton.Visibility = [System.Windows.Visibility]::Visible
+                $nextButton.Content = "Install"
+            }
+            2 {
+                $backtButton.Visibility = [System.Windows.Visibility]::Visible
+                $nextButton.Content = "Uninstall"
+            }
+            3 {
+                $nextButton.Content = "Finish"
+            }
+            4 {
+                $nextButton.Content = "Finish"
+            }
+        }
+    } catch {
+        Write-Host "An error occurred: $_.Exception.Message"
     }
 })
+
 # インストール処理
 function setup-install {
     Write-Output "Script execution cancelled by user."
@@ -43,8 +63,6 @@ function setup-install {
 
     $shortcutLinkCheckBox = [System.Windows.Controls.CheckBox]$window.FindName("shortcutLinkCheckBox")
     if ($shortcutLinkCheckBox.IsChecked) {
-        Write-HOST $shortcutLinkCheckBox
-        Write-Output "Script execution cancelled by user."
         # ショートカット名
         [string]$ShortcutLink = [string]"$env:appdata\Microsoft\Windows\SendTo\toWEBPs.lnk"
         if (Test-Path -Path $ShortcutLink) {
@@ -67,7 +85,6 @@ function setup-install {
     }
 
     $tabControl.SelectedIndex += 2
-    #$NextButton.Content = "Close"
 }
 
 # アンインストール処理
@@ -77,23 +94,19 @@ function setup-uninstall {
     {
         return;
     }
+    Start-Process "$env:APPDATA\Microsoft\Windows\SendTo"
 
     $tabControl.SelectedIndex += 2
 }
 
 #イベントハンドラーの設定
 # 戻るボタン
-$BacktButton.Add_Click({
+$backtButton.Add_Click({
     try{
         $selectedIndex = [int]$tabControl.SelectedIndex
-        switch ($selectedIndex) {
-            1 {
-                $tabControl.SelectedIndex = 0;
-            }
-            2 {
-                $tabControl.SelectedIndex = 0;
-            }
-       }
+        if ($selectedIndex -eq 1 -or $selectedIndex -eq 2) {
+            $tabControl.SelectedIndex = 0
+        }
     }
     catch {
         Write-Host "An error occurred: $_.Exception.Message"
@@ -101,7 +114,7 @@ $BacktButton.Add_Click({
 })
 
 # 次へボタン
-$NextButton.Add_Click({
+$nextButton.Add_Click({
     try{
         $selectedIndex = [int]$tabControl.SelectedIndex
         switch ($selectedIndex) {
