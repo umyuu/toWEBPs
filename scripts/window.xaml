@@ -5,12 +5,12 @@
         <Border Padding="8, 4, 0, 0" Background="Blue">
         <TabControl Name="tabControl">
             <TabItem Header="Welcome" x:Name="tabWelcome">
-                <StackPanel>
-                    <TextBlock Text="Welcome to the Setup Wizard" FontSize="20" Margin="8"/>
-                    <TextBlock Text="Install/Uninstall Selection:" FontSize="20" Margin="8"/>
+                <StackPanel Margin="8">
+                    <TextBlock Text="Welcome to the Setup Wizard" FontSize="24" Margin="8" />
+                    <TextBlock Text="Please select Install or Uninstall:" FontSize="20" Margin="8"/>
                     <StackPanel Margin="8">
-                        <RadioButton Content="Install インストール" GroupName="Selection" Margin="8" IsChecked="True" Name="Install"/>
-                        <RadioButton Content="Uninstall アンインストール" GroupName="Selection" Margin="8"/>
+                        <RadioButton Content="Install" GroupName="Selection" Margin="8" IsChecked="True" Name="Install"/>
+                        <RadioButton Content="Uninstall" GroupName="Selection" Margin="8"/>
                     </StackPanel>
                     <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
                         <Button Content="Next" HorizontalAlignment="Right" Margin="0,10,10,10" Width="128" Height="32" Name="nextButton"/>
@@ -20,10 +20,10 @@
             <TabItem Header="Installation">
                 <!-- インストールステップのUI -->
                 <StackPanel>
-                <TextBlock Text="インストール画面(1/2)" FontSize="20" Margin="10"/>
-                <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="5"  IsChecked="True" Name="shortcutLinkCheckBox"/>
+                <TextBlock Text="インストール画面(1/2)" FontSize="20" Margin="10" TextWrapping="Wrap"/>
+                <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="5"  IsChecked="True" Name="shortcutLinkCheckBox" />
                 <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                    <Button Content="Install" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="128"  Height="32" Margin="50,0,0,20" Name="installButton"/>
+                    <Button Content="Install" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="128"  Height="32" Margin="50,0,0,20" Name="installButton"/>
                     <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,10,10,10" Height="32" Name="installCanecelButton"/>
                 </StackPanel>
                 </StackPanel>
@@ -31,15 +31,26 @@
             <TabItem Header="UnInstallation">
                 <!-- アンインストールステップのUI -->
                 <StackPanel>
-                   <TextBlock Text="アンインストール画面(1/2)" FontSize="20" Margin="10"/>
-                    <Button Content="Uninstall" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="128" Height="32" Margin="50,0,0,20" Name="uninstallButton"/>
+                   <TextBlock Text="アンインストール画面(1/2)" FontSize="20" Margin="10" TextWrapping="Wrap"/>
+                   <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
+                    <Button Content="Uninstall" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="128" Height="32" Margin="50,0,0,20" Name="uninstallButton"/>
                     <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,10,10,10" Height="32" Name="uninstallCanecelButton"/>
+                    </StackPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Finish">
-                <!-- 完了ステップのUI -->
-                <TextBlock Text="完了(2/2)" FontSize="20" Margin="8"/>
-
+                <!-- インストール完了ステップのUI -->
+                <StackPanel>
+                <TextBlock Text="インストール完了(2/2)" FontSize="20" Margin="8"/>
+                <TextBlock Text="インストールしました。WebPに変換したいファイルを選択し送るメニューからtoWEBPsを選択すると実行します。" FontSize="20" Margin="10" TextWrapping="Wrap" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="UnInstallationFinish">
+                <!-- アンインストール完了ステップのUI -->
+                <StackPanel>
+                <TextBlock Text="アンインストール完了(2/2)" FontSize="20" Margin="8" TextWrapping="Wrap" />
+                <TextBlock Text="アンインストール画面(1/2)" FontSize="20" Margin="10" TextWrapping="Wrap" />
+                </StackPanel>
             </TabItem>
         </TabControl>
         </Border>
