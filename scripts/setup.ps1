@@ -20,6 +20,11 @@ $installCanecelButton = $window.FindName("installCanecelButton")
 $uninstallButton = $window.FindName("uninstallButton")
 $uninstallCanecelButton = $window.FindName("uninstallCanecelButton")
 
+$installfinishButton = $window.FindName("installfinishButton")
+$uninstallfinishButton = $window.FindName("uninstallfinishButton")
+
+
+
 #イベントハンドラーの設定
 $nextButton.Add_Click({
     if ($Install.IsChecked)
@@ -30,7 +35,7 @@ $nextButton.Add_Click({
     }
 })
 
-# インストールボタン
+# インストール処理
 $installButton.Add_Click({
     Write-Output "Script execution cancelled by user."
     $result = [System.Windows.MessageBox]::Show("インストールしますか？", $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
@@ -65,16 +70,13 @@ $installButton.Add_Click({
         $Shortcut.Save()
     }
 
-
-
-    $_ = [System.Windows.Forms.MessageBox]::Show("`インストールしました。WebPに変換したいファイルを選択し送るメニューからtoWEBPsを選択すると実行します。", $window.Title, [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
-
     $tabControl.SelectedIndex += 2
 })
 $installCanecelButton.Add_Click({
     $tabControl.SelectedIndex = 0
 })
 
+# アンインストール処理
 $uninstallButton.Add_Click({
     $result = [System.Windows.MessageBox]::Show("アンインストールしますか？", $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
     if ($result -ne [System.Windows.Forms.DialogResult]::Yes)
@@ -82,15 +84,18 @@ $uninstallButton.Add_Click({
         return;
     }
 
-
-    # アンインストール処理をここに記述
-    #Start-Sleep -Seconds 2  # 処理のシミュレーション
-    [System.Windows.MessageBox]::Show("Uninstallation Completed", $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
     $tabControl.SelectedIndex += 2
 })
 
 $uninstallCanecelButton.Add_Click({
     $tabControl.SelectedIndex = 0
+})
+
+$installfinishButton.Add_Click({
+    $window.Close()
+})
+$uninstallfinishButton.Add_Click({
+    $window.Close()
 })
 
 # ウィンドウの表示
