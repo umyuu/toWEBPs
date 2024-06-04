@@ -9,7 +9,7 @@ function load-window {
     return [System.Windows.Markup.XamlReader]::Load($xr)
 }
 
-$window = load-window -xamlFilePath (Join-Path $PSScriptRoot "\window.xaml")
+$window = load-window -xamlFilePath (Join-Path $PSScriptRoot "\installWizard.xaml")
 #
 $tabControl = $window.FindName("tabControl")
 $tabWelcome = $window.FindName("tabWelcome")
@@ -53,7 +53,6 @@ $tabControl.Add_SelectionChanged({
 
 # インストール処理
 function setup-install {
-    Write-Output "Script execution cancelled by user."
     $result = [System.Windows.MessageBox]::Show("インストールしますか？", $window.Title, [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
     if ($result -ne [System.Windows.Forms.DialogResult]::Yes)
     {
