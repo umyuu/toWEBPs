@@ -13,7 +13,10 @@ $window = [System.Windows.Markup.XamlReader]::Load($xr)
 $tabControl = $window.FindName("tabControl")
 
 $tabWelcome = $window.FindName("tabWelcome")
-$nextButton = $window.FindName("nextButton")
+
+$BacktButton = $window.FindName("BackButton")
+$NextButton = $window.FindName("NextButton")
+
 $Install = $window.FindName("Install")
 $installButton = $window.FindName("installButton")
 $installCanecelButton = $window.FindName("installCanecelButton")
@@ -23,15 +26,36 @@ $uninstallCanecelButton = $window.FindName("uninstallCanecelButton")
 $installfinishButton = $window.FindName("installfinishButton")
 $uninstallfinishButton = $window.FindName("uninstallfinishButton")
 
+function tabWelcome-Next {
 
+}
 
 #イベントハンドラーの設定
-$nextButton.Add_Click({
-    if ($Install.IsChecked)
-    {
-        $tabControl.SelectedIndex = 1;
-    }else {
-        $tabControl.SelectedIndex = 2;
+# 戻るボタン
+$BacktButton.Add_Click({
+    $SelectedIndex = [int]$tabControl.SelectedIndex
+    if ($SelectedIndex -eq 0) {
+            return
+    }
+
+    if ($SelectedIndex -eq 1 -or $SelectedIndex -eq 2) {
+        # Welcomeタブに
+        $tabControl.SelectedIndex = 0;
+        return
+    }
+})
+
+# 次へボタン
+$NextButton.Add_Click({
+    $SelectedIndex = [int]$tabControl.SelectedIndex
+    if ($SelectedIndex -eq 0) {
+        if ($Install.IsChecked) {
+            $tabControl.SelectedIndex = 1;
+        }else {
+            $tabControl.SelectedIndex = 2;
+        }
+
+        return
     }
 })
 

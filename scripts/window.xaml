@@ -12,11 +12,19 @@
         <Style x:Key="DialogButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="108"/>
             <Setter Property="Height" Value="32"/>
-            <Setter Property="Margin" Value="16,0,0,0"/>
         </Style>
     </Window.Resources>
-    <Grid>
-        <Border Padding="8, 4, 0, 0" Background="#FF8F2C5C">
+    <DockPanel LastChildFill="True">
+        <!-- 上部のパネル -->
+        <StackPanel DockPanel.Dock="Top" Background="LightGray" Height="50">
+            <TextBlock Text="Setup Wizard" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <!-- 下部のパネル -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="8" HorizontalAlignment="Right">
+            <Button Content="Back" Style="{StaticResource DialogButtonStyle}" Margin="8,0,0,0" Name="BackButton"/>
+            <Button Content="Next" Style="{StaticResource DialogButtonStyle}" Margin="16,0,0,0" Name="NextButton"/>
+        </StackPanel>
+
         <TabControl Name="tabControl">
             <TabItem Header="Welcome" x:Name="tabWelcome">
                 <Border Padding="0, 0, 0, 0" Background="Blue">
@@ -29,9 +37,7 @@
                         <RadioButton Content="Install" GroupName="Selection" Margin="8" IsChecked="True" Name="Install"/>
                         <RadioButton Content="Uninstall" GroupName="Selection" Margin="8"/>
                     </StackPanel>
-                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                        <Button Content="Next" HorizontalAlignment="Right" Style="{StaticResource DialogButtonStyle}" Name="nextButton"/>
-                    </StackPanel>
+
                     </StackPanel>
                     </Border>
                 </StackPanel>
@@ -77,7 +83,5 @@
                 </StackPanel>
             </TabItem>
         </TabControl>
-        </Border>
-
-    </Grid>
+    </DockPanel>
 </Window>
