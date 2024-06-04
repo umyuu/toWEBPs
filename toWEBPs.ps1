@@ -7,14 +7,6 @@ Set-Location -Path $PSScriptRoot #スクリプトの実行ディレクトリ
 $stopWatch.Start()
 . "$($ParentDirectory)\scripts\utils.ps1"
 
-# Enumの定義
-enum ConversionResult {
-    None
-    Success
-    Skipped
-    Error
-}
-
 # WebpConverterクラスの定義
 class WebpConverter {
     # WebPの実行ファイルのダウンロードページのURL
