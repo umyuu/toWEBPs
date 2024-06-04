@@ -3,12 +3,11 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName PresentationFramework
 # 実行ディレクトリを変更します。
 Set-Location -Path (Split-Path $PSScriptRoot -Parent)
-[string]$ParentDirectory = Split-Path $PSScriptRoot -Parent
+[string]$ParentDirectory = Get-Location
 . "$($ParentDirectory)\scripts\utils.ps1"
-
 $config = Load-Config -configFilePath (Join-Path $ParentDirectory "config.json")
 
-$window = Load-Window -xamlFilePath (Join-Path $PSScriptRoot "\installWizard.xaml")
+$window = Load-Window -xamlFilePath (Join-Path $ParentDirectory "scripts\installWizard.xaml")
 
 #
 $tabControl = $window.FindName("tabControl")
@@ -73,7 +72,7 @@ function setup-install {
             }            
         }
 
-        [string]$TargetPath = $ParentDirectory + "\toWEBPs.bat"
+        [string]$TargetPath = Join-Path $ParentDirectory "toWEBPs.bat"
 
         $WshShell = New-Object -comObject WScript.Shell
 
@@ -83,7 +82,16 @@ function setup-install {
         $Shortcut.Save()
     }
 
-
+    # WebPの実行ファイルのチェック
+    $WebPExecutablePath = Join-Path $ParentDirectory $config.ExecutablePath
+    if (-not (Test-Path -Path $WebPExecutablePath)) {
+        $result = [System.Windows.Forms.MessageBox]::Show("`WebPの実行ファイルが存在しません。`n$($WebPExecutablePath)`n`nダウンロードページを開きますか？`n$($config.DownloadPageUrl)`nはい:開く、いいえ:続行する。", "確認:toWEBPs", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+        if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
+            Start-Process $config.DownloadPageUrl
+        } else {
+            Write-Host "Script execution cancelled by user."
+        }
+    }
 
     $tabControl.SelectedIndex += 2
 }
