@@ -1,4 +1,5 @@
 # toWEBPs  
+[![Windows](https://img.shields.io/badge/Windows-0078D6)](#) [![PowerShell](https://img.shields.io/badge/PowerShell-%235391FE.svg?logo=powershell&&logoColor=white)](#)
 ## 📝 概要  
 toWEBPs は、複数の画像ファイルを一括して WEBP 形式に変換するための PowerShell スクリプトです。変換には Google が提供する cwebp ツールを使用します。  
 
@@ -6,11 +7,8 @@ toWEBPs は、複数の画像ファイルを一括して WEBP 形式に変換す
 - 💻 システム要件  
   - Windowsパソコン  
 - インストール手順  
-ToWEBPsのフォルダをダウンロードし、展開します。  
-ダウンロードしたフォルダに移動し、install.batを実行します。これにより、必要なツールや環境がセットアップされます。  
-
-### 💡 補足事項  
-- インストール時に、送るメニューにToWEBPsが登録されます。  
+1. ToWEBPsのフォルダをダウンロードし、展開します。  
+1. ダウンロードしたフォルダに移動し、`01_setup.bat`を実行します。これにより、必要なツールや環境がセットアップされます。  
 
 ## 🚀 実行  
 1. 変換したい複数の画像ファイルを選択し、右クリックして「送る」メニューを表示します。  

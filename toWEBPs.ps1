@@ -1,24 +1,11 @@
+Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Runtime
 
-# JSON設定ファイルの読み込み
-function Load-Config {
-    param (
-        [string]$configFilePath
-    )
-    if (-not (Test-Path -Path $configFilePath)) {
-        Write-Host "設定ファイルが存在しません: $configFilePath"
-        exit
-    }
-    return Get-Content -Path $configFilePath | ConvertFrom-Json
-}
-
-# Enumの定義
-enum ConversionResult {
-    None
-    Success
-    Skipped
-    Error
-}
+Set-Location -Path $PSScriptRoot #スクリプトの実行ディレクトリ
+[System.Diagnostics.Stopwatch]$stopWatch = New-Object System.Diagnostics.Stopwatch
+$stopWatch.Start()
+. "$($PSScriptRoot)\scripts\utils.ps1"
 
 # WebpConverterクラスの定義
 class WebpConverter {
@@ -30,7 +17,6 @@ class WebpConverter {
     [string[]]$ExcludedFileExtensions
     # WebP変換時に使用するデフォルトのコマンドライン引数の配列
     [string[]]$DefaultArguments
-    [PSCustomObject]$Messages
     
     # コンストラクタ
     WebpConverter([PSCustomObject]$config){
@@ -38,7 +24,6 @@ class WebpConverter {
         $this.ExecutablePath = Join-Path $PSScriptRoot $config.ExecutablePath
         $this.ExcludedFileExtensions = $config.ExcludedFileExtensions
         $this.DefaultArguments = $config.DefaultArguments
-        $this.Messages = $config.Messages
     }
     # 実行ファイルの存在確認
     [bool]IsExecutableExists(){
@@ -57,8 +42,10 @@ class WebpConverter {
     }
 }
 
+# Convert-ToWebp関数の定義
 function Convert-ToWebp {
     param (
+        [Parameter(Mandatory=$true)] #引数を必須に
         [WebpConverter]$webp,
         [string]$FileName
     )
@@ -88,13 +75,13 @@ function Convert-ToWebp {
     return [ConversionResult]::Success
 }
 
-$configFilePath = Join-Path $PSScriptRoot "config.json"
-$config = Load-Config $configFilePath
+# スクリプト実行部分
 
-# 主処理
-#$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
 $args = @($args)
-Write-Host "#Display Run Params $($PSScriptRoot) $($args)"
+#$args = @("K:\GitHub\toWEBPs\20240529_003857.webp")
+
+Write-Host "#Run Params $($PSScriptRoot) $($args)"
+$config = Load-Config -configFilePath (Join-Path $PSScriptRoot "config.json")
 
 # WebPコンバータのインスタンス化と設定の確認
 [WebpConverter]$webp = [WebpConverter]::new($config)
@@ -114,21 +101,23 @@ if (-not $webp.IsExecutableExists()) {
 Write-Host "Exists OK $($webp.ExecutablePath)"
 
 Write-Host "#Main"
-# 結果カウンターの初期化
-$conversionResultDictionary = [ordered]@{}
+
+# 結果サマリーの初期化
+$resultSummary = [ordered]@{}
 [System.Enum]::GetValues([ConversionResult]) | ForEach-Object {
-    $conversionResultDictionary.Add($_, [int]0)
+    $resultSummary.Add($_, [int]0)
 }
 
+# 主処理
 foreach ($v in $args) {
-  $result = Convert-ToWebp -webp $webp -FileName $v
-  $conversionResultDictionary[$result] += 1  
+    $result = Convert-ToWebp -webp $webp -FileName $v
+    $resultSummary[$result] += 1  
 }
 
 # 処理件数を出力
 [System.Text.StringBuilder]$sb = New-Object System.Text.StringBuilder
 [void]$sb.Append("Conversion Results: Total:$($args.Length), ")
-foreach ($entry in $conversionResultDictionary.GetEnumerator()) {
+foreach ($entry in $resultSummary.GetEnumerator()) {
     if ($entry.Key -ne "None") {
         [void]$sb.Append("$($entry.Key): $($entry.Value), ")
     }
@@ -137,7 +126,7 @@ foreach ($entry in $conversionResultDictionary.GetEnumerator()) {
 if ($sb.Length -gt 2) {
     [void]$sb.Remove($sb.Length -2, 2)
 }
-
+Write-Host "Execution time: $($stopWatch.ElapsedMilliseconds)ms"
 Write-Host $sb.ToString()
 
 Write-Host "Sleep 15sec"
