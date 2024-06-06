@@ -24,16 +24,15 @@
             <Button Content="Back" Style="{StaticResource DialogButtonStyle}" Margin="8,0,0,0" Name="BackButton"/>
             <Button Content="Next" Style="{StaticResource DialogButtonStyle}" Margin="16,0,0,0" Name="NextButton"/>
         </StackPanel>
-
         <TabControl Name="tabControl">
             <TabItem Header="Welcome" x:Name="tabWelcome">
                 <Border Padding="0, 0, 0, 0">
                 <StackPanel Margin="0">
                     <TextBlock Text="Welcome to the Setup Wizard" Style="{StaticResource HeadingStyle}"/>
                     <Border Padding="8, 4, 0, 0" >
-                    <StackPanel Margin="8">
-                    <TextBlock Text="Please select Install or Uninstall:" FontSize="20" Margin="8"/>
-                    <StackPanel Margin="8">
+                    <StackPanel Margin="8,0,0,0">
+                    <TextBlock Text="Please select Install or Uninstall:" FontSize="20"/>
+                    <StackPanel Margin="8,0,0,0">
                         <RadioButton Content="Install" GroupName="Selection" Margin="8" IsChecked="True" Name="Install"/>
                         <RadioButton Content="Uninstall" GroupName="Selection" Margin="8"/>
                     </StackPanel>
@@ -44,35 +43,54 @@
             </TabItem>
             <TabItem Header="Installation">
                 <!-- インストールステップのUI -->
-                <StackPanel Margin="8">
+                <StackPanel Margin="0">
                 <TextBlock Text="インストール画面(1/2)" Style="{StaticResource HeadingStyle}" TextWrapping="Wrap"/>
-                <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="5"  IsChecked="True" Name="ShortCutLinkCheckBox" />
-                <TextBlock Text="installボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
-                </StackPanel>
+                <Border Padding="8, 4, 0, 0" >
+                    <StackPanel Margin="0">
+                        <CheckBox Content="「送る」メニューにショートカットを作成します。" Margin="8"  IsChecked="True" Name="ShortCutLinkCheckBox" />
+                        <CheckBox Content="WEBPのダウンロードサイトを開きます。" Margin="8"  IsChecked="True" Name="DownloadLinkCheckBox" />
+                        <TextBlock Text="installボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
+                    </StackPanel>
+               </Border>
+            </StackPanel>
             </TabItem>
             <TabItem Header="UnInstallation">
                 <!-- アンインストールステップのUI -->
-                <StackPanel Margin="8">
+                <StackPanel Margin="0">
                    <TextBlock Text="アンインストール画面(1/2)"  Style="{StaticResource HeadingStyle}" TextWrapping="Wrap"/>
-                   <CheckBox Content="アンインストール完了時に「送る」フォルダを開く。" Margin="5" IsChecked="True" Name="OepnSendToCheckBox" />
-                   <TextBlock Text="Uninstallボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
+                   <Border Padding="8, 4, 0, 0" >
+                    <StackPanel Margin="8">
+                        <CheckBox Content="アンインストール完了時に「送る」フォルダを開く。" Margin="8" IsChecked="True" Name="OepnSendToCheckBox" />
+                        <TextBlock Text="Uninstallボタンを押すと処理を開始します。" FontSize="20" Margin="10" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    </Border>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Finish">
                 <!-- インストール完了ステップのUI -->
-                <StackPanel Margin="8">
+                <StackPanel Margin="0">
                 <TextBlock Text="インストール完了(2/2)"  Style="{StaticResource HeadingStyle}"/>
-                <TextBlock Text="インストールが完了しました。WebPに変換したいファイルを選択し送るメニューからtoWEBPsを選択すると実行します。" FontSize="20" Margin="10" TextWrapping="Wrap" />
-                <TextBlock Text="この画面は、閉じていただいて問題ありません。" FontSize="20" Margin="10" TextWrapping="Wrap" />
-                </StackPanel>
+                <Border Padding="8, 4, 0, 0" >
+                    <StackPanel Margin="8">
+                        <TextBlock Text="ご使用のコンピューターに toWEBPs がセットアップされました。" FontSize="18" Margin="8,0,0,0" TextWrapping="Wrap" />
+                        <TextBlock Text="WebPに変換したいファイルを選択し送るメニューからtoWEBPsを選択すると実行します。" Margin="8,0,0,0" FontSize="18" TextWrapping="Wrap" />
+                        <TextBlock Text="セットアップを終了するには「Finish」をクリックしてください。" FontSize="18"  Margin="16,8,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
             </TabItem>
             <TabItem Header="Finish">
                 <!-- アンインストール完了ステップのUI -->
-                <StackPanel Margin="8">
+                <StackPanel Margin="0">
                 <TextBlock Text="アンインストール完了(2/2)"  Style="{StaticResource HeadingStyle}" TextWrapping="Wrap" />
-                <TextBlock Text="アンインストールが完了しました。ありがとうございました。送るのメニューを開きましたのでtoWEBPsのショートカットファイルの削除をお願いします。" FontSize="20" Margin="10" TextWrapping="Wrap" />
-                <TextBlock Text="この画面は、閉じていただいて問題ありません。" FontSize="20" Margin="10" TextWrapping="Wrap" />
-                </StackPanel>
+                <Border Padding="8, 4, 0, 0" >
+                    <StackPanel Margin="8">
+                <TextBlock Text="アンインストールが完了しました。ありがとうございました。" FontSize="18" Margin="8,0,0,0" TextWrapping="Wrap" />
+                <TextBlock Text="送るのメニューを開きました。お手数ですが toWEBPs のショートカットファイルの削除をお願いします。" FontSize="18" Margin="8,0,0,0" TextWrapping="Wrap" />
+                <TextBlock Text="セットアップを終了するには「Finish」をクリックしてください。" FontSize="18"  Margin="16,8,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
             </TabItem>
         </TabControl>
     </DockPanel>

@@ -1,4 +1,4 @@
-# toWEBPs  
+# toWEBPs — in PowerShell
 [![Windows](https://img.shields.io/badge/Windows-0078D6)](#) [![PowerShell](https://img.shields.io/badge/PowerShell-%235391FE.svg?logo=powershell&&logoColor=white)](#)
 ## 📝 概要  
 toWEBPs は、複数の画像ファイルを一括して WEBP 形式に変換するための PowerShell スクリプトです。変換には Google が提供する cwebp ツールを使用します。  

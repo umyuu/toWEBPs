@@ -1,3 +1,4 @@
 #  Ignore cwebp
 cwebp.exe
+_cwebp.exe
 libwebp*/

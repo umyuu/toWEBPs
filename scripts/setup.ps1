@@ -81,16 +81,19 @@ function setup-install {
         $Shortcut.WorkingDirectory = $ParentDirectory
         $Shortcut.Save()
     }
-
-    # WebPの実行ファイルのチェック
-    $WebPExecutablePath = Join-Path $ParentDirectory $config.ExecutablePath
-    if (-not (Test-Path -Path $WebPExecutablePath)) {
-        $result = [System.Windows.Forms.MessageBox]::Show("`WebPの実行ファイルが存在しません。`n$($WebPExecutablePath)`n`nダウンロードページを開きますか？`n$($config.DownloadPageUrl)`nはい:開く、いいえ:続行する。", "確認:toWEBPs", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
-        if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
-            Start-Process $config.DownloadPageUrl
-        } else {
-            Write-Host "Script execution cancelled by user."
-        }
+    
+    $downloadLinkCheckBox = [System.Windows.Controls.CheckBox]$window.FindName("DownloadLinkCheckBox")
+    if ($downloadLinkCheckBox.IsChecked) {
+        # WebPの実行ファイルのチェック
+        $WebPExecutablePath = Join-Path $ParentDirectory $config.ExecutablePath
+        if (-not (Test-Path -Path $WebPExecutablePath)) {
+            $result = [System.Windows.Forms.MessageBox]::Show("`WebPの実行ファイルが存在しません。`n$($WebPExecutablePath)`n`nダウンロードページを開きますか？`n$($config.DownloadPageUrl)`nはい:開く、いいえ:続行する。", "確認:toWEBPs", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
+            if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
+                Start-Process $config.DownloadPageUrl
+            } else {
+                Write-Host "Script execution cancelled by user."
+            }
+        }    
     }
 
     $tabControl.SelectedIndex += 2
